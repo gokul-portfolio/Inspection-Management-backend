@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Template {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String?
+  questions   TemplateQuestion[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TemplateQuestion {
+  id           Int      @id @default(autoincrement())
+  questionText String
+  fieldType    String
+  required     Boolean  @default(false)
+
+  options      Json?
+
+  templateId   Int
+  template     Template @relation(fields: [templateId], references: [id])
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CorrectiveAction {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  priority    String
+  status      String
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
